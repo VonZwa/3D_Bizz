@@ -17,26 +17,27 @@
 
     * { box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--txt);
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--txt);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
     }
 
-    .wrap {
+    .wrap{
       max-width: 1200px;
       margin: 0 auto;
       padding: 18px;
     }
 
-    h2 {
+    h2{
       margin: 0 0 12px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
 
     /* ================= PLAN ================= */
-    .plan {
+    .plan{
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
@@ -46,62 +47,63 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     }
 
-    /* ================= HOTSPOTS (old style, slightly bigger) ================= */
-    .hotspot {
-      position: absolute;
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      border: 2px solid rgba(255,255,255,0.92);
+    /* ================= HOTSPOTS ================= */
+    .hotspot{
+      position:absolute;
+      width:26px;
+      height:26px;
+      border-radius:999px;
+      border:2px solid rgba(255,255,255,0.92);
       background: rgba(0,0,0,0.35);
       transform: translate(-50%, -50%);
-      cursor: pointer;
+      cursor:pointer;
       z-index: 2;
       transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
     }
 
-    .hotspot::after {
-      content: "";
-      position: absolute;
-      inset: 7px;
-      border-radius: 999px;
+    .hotspot::after{
+      content:"";
+      position:absolute;
+      inset:7px;
+      border-radius:999px;
       background: rgba(255,255,255,0.92);
       transition: inset .12s ease, opacity .12s ease;
     }
 
-    .hotspot:hover {
-      transform: translate(-50%, -50%) scale(1.15);
+    .hotspot:hover{
+      transform: translate(-50%, -50%) scale(1.08);
       background: rgba(255,255,255,0.08);
     }
 
-    .hotspot.active {
-      box-shadow: 0 0 0 8px rgba(255,255,255,0.12);
+    .hotspot.active{
+      box-shadow: 0 0 0 10px rgba(255,255,255,0.16);
       background: rgba(255,255,255,0.10);
     }
-    .hotspot.active::after { inset: 6px; }
+    .hotspot.active::after{
+      inset: 6px;
+    }
 
-    .hotspot.peek {
+    .hotspot.peek{
       box-shadow: 0 0 0 10px rgba(255,255,255,0.10);
-       background: rgba(255,255,255,0.10);
-      animation: pulse 1.3s infinite;
+      animation: pulse 1.15s infinite;
     }
     @keyframes pulse{
-      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.20); }
+      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.22); }
       70%  { box-shadow: 0 0 0 14px rgba(255,255,255,0.00); }
       100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.00); }
     }
 
-    /* ================= HOVER CARD ================= */
-    .tip {
-      position: absolute;
-      width: 220px;
+    /* ================= HOVER CARD (dot tooltip) ================= */
+    .tip{
+      position:absolute;
+      width: 240px;
       background: rgba(15,15,15,0.96);
       border: 1px solid var(--line);
       border-radius: 14px;
-      overflow: hidden;
+      overflow:hidden;
       box-shadow: 0 18px 40px rgba(0,0,0,0.45);
-      display: none;
-      pointer-events: none;
+      display:none;
+      pointer-events:none;
       z-index: 5;
 
       left: 50%;
@@ -109,22 +111,22 @@
       transform: translate(-50%, -100%);
     }
 
-    .tip img {
-      width: 100%;
+    .tip img{
+      width:100%;
       height: 120px;
       object-fit: cover;
-      display: block;
+      display:block;
     }
 
-    .tip .meta {
+    .tip .meta{
       padding: 10px 12px 12px;
-      display: flex;
+      display:flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 10px;
+      align-items:center;
+      gap:10px;
     }
 
-    .tip .title {
+    .tip .title{
       font-size: 14px;
       font-weight: 650;
       white-space: nowrap;
@@ -132,50 +134,50 @@
       text-overflow: ellipsis;
     }
 
-    .tip .hint {
+    .tip .hint{
       font-size: 12px;
       color: var(--txt2);
     }
 
-    .tip::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: -8px;
+    .tip::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      bottom:-8px;
       transform: translateX(-50%);
-      width: 14px;
-      height: 14px;
+      width:14px;
+      height:14px;
       background: rgba(15,15,15,0.96);
       border-right: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
       rotate: 45deg;
     }
 
-    .tip.flipY {
+    .tip.flipY{
       top: calc(100% + 12px);
       transform: translate(-50%, 0);
     }
-    .tip.flipY::after {
-      top: -8px;
-      bottom: auto;
-      border-right: none;
-      border-bottom: none;
+    .tip.flipY::after{
+      top:-8px;
+      bottom:auto;
+      border-right:none;
+      border-bottom:none;
       border-left: 1px solid var(--line);
       border-top: 1px solid var(--line);
       rotate: 45deg;
     }
 
-    .tip.clampLeft { left: 0; transform: translate(0, -100%); }
-    .tip.clampRight { left: auto; right: 0; transform: translate(0, -100%); }
-    .tip.clampLeft.flipY, .tip.clampRight.flipY { transform: translate(0, 0); }
+    .tip.clampLeft{ left:0; transform: translate(0, -100%); }
+    .tip.clampRight{ left:auto; right:0; transform: translate(0, -100%); }
+    .tip.clampLeft.flipY, .tip.clampRight.flipY{ transform: translate(0,0); }
 
-    /* ================= VIEWER OVER PLAN (overlay inside plan) ================= */
+    /* ================= VIEWER OVER PLAN (overlay in plan) ================= */
     .viewerWrap{
       position:absolute;
       inset:0;
       display:none;
-      z-index:9;
-      padding:12px;
+      z-index: 9;
+      padding: 12px;
       background: rgba(0,0,0,0.35);
       backdrop-filter: blur(2px);
     }
@@ -184,7 +186,7 @@
     .viewer{
       width:100%;
       height:100%;
-      border-radius:14px;
+      border-radius: 14px;
       overflow:hidden;
       background:#000;
       border: 1px solid rgba(255,255,255,0.10);
@@ -192,135 +194,137 @@
       position:relative;
     }
 
-    .viewerHeader {
-      position: absolute;
+    .viewerHeader{
+      position:absolute;
       inset: 12px 12px auto 12px;
-      display: flex;
-      align-items: center;
+      display:flex;
       justify-content: space-between;
-      gap: 12px;
-      z-index: 2;
-      pointer-events: none;
+      align-items:center;
+      gap:12px;
+      z-index:2;
+      pointer-events:none;
     }
 
-    .viewerTitle {
-      pointer-events: none;
-      font-size: 14px;
+    .viewerTitle{
+      pointer-events:none;
+      font-size:14px;
       color: rgba(255,255,255,0.88);
-      background: rgba(0,0,0,0.40);
+      background: rgba(0,0,0,0.42);
       border: 1px solid rgba(255,255,255,0.12);
       padding: 8px 10px;
       border-radius: 12px;
       backdrop-filter: blur(6px);
+      max-width: 60%;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
     }
 
-    .viewerBtns {
-      display: flex;
-      gap: 8px;
-      pointer-events: auto;
+    .viewerBtns{
+      display:flex;
+      gap:8px;
+      pointer-events:auto;
     }
 
-    .btn {
-      border: 0;
-      background: rgba(0,0,0,0.45);
+    .btn{
+      border:0;
+      background: rgba(0,0,0,0.48);
       border: 1px solid rgba(255,255,255,0.14);
-      color: #fff;
+      color:#fff;
       padding: 8px 10px;
       border-radius: 12px;
-      cursor: pointer;
-      font-size: 14px;
+      cursor:pointer;
+      font-size:14px;
       backdrop-filter: blur(6px);
+      user-select:none;
     }
-    .btn:hover { background: rgba(0,0,0,0.60); }
+    .btn:hover{ background: rgba(0,0,0,0.62); }
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      background: #000;
+    iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      background:#000;
     }
 
     /* ================= CAROUSEL ================= */
-    .railWrap {
-      margin-top: 18px;
+    .railWrap{
+      margin-top: 14px;
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 14px;
       padding: 12px;
       box-shadow: 0 14px 40px rgba(0,0,0,0.28);
     }
+    .railWrap.hidden{ display:none; }
 
-    .railHeader {
-      display: flex;
+    .railHeader{
+      display:flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 5px;
-      gap: 12px;
+      align-items:center;
+      gap:12px;
+      margin-bottom: 10px;
     }
-    .railHeader .sub { font-size: 13px; color: var(--txt2); }
-
-    .railControls { display: flex; gap: 8px; }
-
-    .rail {
-      padding: 6px 2px 16px;
-      overflow-x: auto;
-      overflow-y: visible; 
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      padding-bottom: 0px;
-      scrollbar-width: thin;
-      /* 👇 döda scrollbar */
-      scrollbar-width: none;        /* Firefox */
-      -ms-overflow-style: none;     /* Edge legacy */
+    .railHeader .sub{
+      font-size: 13px;
+      color: var(--txt2);
     }
+    .railControls{ display:flex; gap:8px; }
 
-    .rail::-webkit-scrollbar{
-      display: none;                /* Chrome / Edge / Safari */
+    .rail{
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      scroll-behavior:smooth;
+      padding-bottom: 6px;
+
+      /* “Apple-igt” snap */
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+
+      /* göm scrollbar */
+      scrollbar-width: none;      /* Firefox */
+      -ms-overflow-style: none;   /* old Edge */
     }
-    
+    .rail::-webkit-scrollbar{ display:none; } /* Chrome/Edge/Safari */
 
-    .rail::-webkit-scrollbar { height: 10px; }
-    .rail::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 999px; }
-
-    .navBtn {
-      border: 0;
+    .navBtn{
+      border:0;
       background: rgba(255,255,255,0.12);
-      color: #fff;
-      padding: 8px 10px;
-      border-radius: 10px;
-      cursor: pointer;
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
       font-size: 14px;
-      user-select: none;
+      user-select:none;
     }
-    .navBtn:hover { background: rgba(255,255,255,0.18); }
-    .navBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .navBtn:hover{ background: rgba(255,255,255,0.18); }
+    .navBtn:disabled{ opacity:0.35; cursor:not-allowed; }
 
-    .card {
-      flex: 0 0 240px;
+    .card{
+      flex: 0 0 260px; /* lite större så “active” inte hamnar utanför */
       background: var(--panel2);
       border: 1px solid var(--line);
-      border-radius: 14px;
-      overflow: hidden;
-      cursor: pointer;
+      border-radius: 16px;
+      overflow:hidden;
+      cursor:pointer;
       transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
-      position: relative;
-      margin-bottom: 8px;
+      position:relative;
+      scroll-snap-align: start;
     }
-    .card:hover { transform: translateY(-2px); }
+    .card:hover{ transform: translateY(-2px); }
 
-    .card img {
-      width: 100%;
-      height: 135px;
+    .card img{
+      width:100%;
+      height: 145px;
       object-fit: cover;
-      display: block;
+      display:block;
     }
 
-    .badge360 {
-      position: absolute;
-      top: 10px;
-      left: 10px;
+    .badge360{
+      position:absolute;
+      top:10px;
+      left:10px;
       background: rgba(0,0,0,0.55);
       border: 1px solid rgba(255,255,255,0.14);
       color: rgba(255,255,255,0.92);
@@ -330,41 +334,45 @@
       backdrop-filter: blur(6px);
     }
 
-    .card .cmeta {
-      padding: 10px 12px 12px;
-      display: flex;
+    .card .cmeta{
+      padding: 12px;
+      display:flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 10px;
+      align-items:center;
+      gap:10px;
     }
-
-    .card .cname {
+    .card .cname{
       font-size: 14px;
-      font-weight: 650;
+      font-weight: 700;
       white-space: nowrap;
-      overflow: hidden;
+      overflow:hidden;
       text-overflow: ellipsis;
     }
-
-    .card .ctag {
+    .card .ctag{
       font-size: 12px;
       color: var(--txt2);
       white-space: nowrap;
     }
 
+    /* tydligare active */
     .card.active{
-  border: 2px solid rgba(255, 231, 231, 0.956);   /* tjockare & tydligare */
-  box-shadow:
-    0 0 0 2px rgba(255,255,255,0.25),
-    0 18px 50px rgba(0,0,0,0.45);
-  transform: translateY(-2px);
-}
+      border-color: rgba(255,255,255,0.85);
+      box-shadow:
+        0 0 0 4px rgba(255,255,255,0.25),
+        0 18px 50px rgba(0,0,0,0.50);
+      transform: translateY(-3px);
+    }
+    .card.active .ctag{ color: rgba(255,255,255,0.92); }
 
-  .card.active .ctag{
-  color: rgba(255,255,255,0.95);
-  font-weight: 600;
-}
+    /* lite luft så active inte “klipper” längst ner */
+    .railWrap{ padding-bottom: 16px; }
 
+    /* mobil: lite tightare UI */
+    @media (max-width: 640px){
+      .wrap{ padding: 14px; }
+      .card{ flex-basis: 240px; }
+      .card img{ height: 140px; }
+    }
   </style>
 </head>
 
@@ -372,8 +380,8 @@
   <div class="wrap">
     <h2>Plan</h2>
 
-    <!-- ✅ EN plan-container (viewer ligger inuti) -->
     <div class="plan" id="plan">
+      <!-- Viewer overlay INSIDE plan -->
       <div class="viewerWrap" id="viewerWrap">
         <div class="viewer" id="viewer">
           <div class="viewerHeader">
@@ -389,11 +397,11 @@
     </div>
 
     <!-- HERO RAIL -->
-    <div class="railWrap">
+    <div class="railWrap" id="railWrap">
       <div class="railHeader">
         <div>
-          <div style="font-weight:650">Rum</div>
-          <div class="sub"> - Klick för 360°<br> - Hover för att se var rummet ligger.</div>
+          <div style="font-weight:750">Rum</div>
+          <div class="sub">Klick för 360°. Hover visar var på planen.</div>
         </div>
         <div class="railControls">
           <button class="navBtn" id="prevBtn">◀</button>
@@ -405,30 +413,35 @@
   </div>
 
   <script>
+    // ======= Mobil-detektering (styr rail-visibility vid öppet pano) =======
+    const IS_MOBILE = window.matchMedia("(max-width: 640px)").matches;
+
+    // ======= Rum-konfig (pano = query param i 360viewer.html) =======
     const rooms = [
-      { name:"Entré", pano:"entre", hero:"HERO/hero_entre.png", top:"48%", left:"45%" },
-      { name:"Kök", pano:"kok", hero:"HERO/hero_kok.png", top:"54%", left:"71%" },
-      { name:"Kontor 1", pano:"kontor1", hero:"HERO/hero_kontor1.png", top:"70%", left:"82%" },
-      { name:"Kontor 2", pano:"kontor2", hero:"HERO/hero_kontor2.png", top:"75%", left:"63%" },
-      { name:"Mötesrum 1", pano:"motesrum1", hero:"HERO/hero_motesrum1.png", top:"78%", left:"37.5%" },
-      { name:"Mötesrum 2", pano:"motesrum2", hero:"HERO/hero_motesrum2.png", top:"19%", left:"46.5%" },
-      { name:"Teamsrum", pano:"teamsrum1", hero:"HERO/hero_teamsrum1.png", top:"80%", left:"48%" }
+      { name:"Entré",      pano:"entre",     hero:"HERO/hero_entre.png",     top:"48%",  left:"45%"  },
+      { name:"Kök",        pano:"kok",       hero:"HERO/hero_kok.png",       top:"54%",  left:"71%"  },
+      { name:"Kontor 1",   pano:"kontor1",   hero:"HERO/hero_kontor1.png",   top:"70%",  left:"82%"  },
+      { name:"Kontor 2",   pano:"kontor2",   hero:"HERO/hero_kontor2.png",   top:"75%",  left:"63%"  },
+      { name:"Mötesrum 1", pano:"motesrum1", hero:"HERO/hero_motesrum1.png", top:"78%",  left:"37.5%"},
+      { name:"Mötesrum 2", pano:"motesrum2", hero:"HERO/hero_motesrum2.png", top:"19%",  left:"46.5%"},
+      { name:"Teamsrum",   pano:"teamsrum1", hero:"HERO/hero_teamsrum1.png", top:"80%",  left:"48%"  }
     ];
 
-    const plan = document.getElementById("plan");
-    const rail = document.getElementById("rail");
+    const plan      = document.getElementById("plan");
+    const rail      = document.getElementById("rail");
+    const railWrap  = document.getElementById("railWrap");
 
-    const viewerWrap = document.getElementById("viewerWrap");
-    const viewer = document.getElementById("viewer");
-    const frame = document.getElementById("viewerFrame");
+    const viewerWrap= document.getElementById("viewerWrap");
+    const viewer    = document.getElementById("viewer");
+    const frame     = document.getElementById("viewerFrame");
     const roomLabel = document.getElementById("roomLabel");
 
-    const closeBtn = document.getElementById("closeBtn");
-    const fsBtn = document.getElementById("fsBtn");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
+    const closeBtn  = document.getElementById("closeBtn");
+    const fsBtn     = document.getElementById("fsBtn");
+    const prevBtn   = document.getElementById("prevBtn");
+    const nextBtn   = document.getElementById("nextBtn");
 
-    const dotByPano = new Map();
+    const dotByPano  = new Map();
     const cardByPano = new Map();
 
     let activePano = null;
@@ -439,12 +452,14 @@
       cardByPano.forEach((card, key) => card.classList.toggle("active", key === pano));
     }
 
-    // hover-highlight utan att sabba active-state
     function setPeek(pano){
       dotByPano.forEach((dot, key) => dot.classList.toggle("peek", key === pano));
+      cardByPano.forEach((card, key) => card.classList.toggle("active", key === pano));
     }
+
     function clearPeek(){
       dotByPano.forEach(dot => dot.classList.remove("peek"));
+      setActive(activePano);
     }
 
     function openRoom(room){
@@ -453,8 +468,11 @@
       frame.src = `360viewer.html?pano=${room.pano}`;
       setActive(room.pano);
 
+      // Mobil: dölj rail när pano öppnas
+      if (IS_MOBILE && railWrap) railWrap.classList.add("hidden");
+
       const card = cardByPano.get(room.pano);
-      if (card) card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      if (card) card.scrollIntoView({ behavior:"smooth", inline:"center", block:"nearest" });
     }
 
     function closeRoom(){
@@ -462,12 +480,10 @@
       frame.src = "";
       roomLabel.textContent = "";
       setActive(null);
-    }
 
-    // Klick utanför viewer = stäng
-    viewerWrap.addEventListener("click", (e) => {
-      if (e.target === viewerWrap) closeRoom();
-    });
+      // Mobil: visa rail igen när pano stängs
+      if (railWrap) railWrap.classList.remove("hidden");
+    }
 
     async function toggleFullscreen(){
       try{
@@ -497,6 +513,7 @@
       rail.scrollBy({ left: direction * step, behavior:"smooth" });
     }
 
+    // Tooltip clamp + flip
     function positionTip(dot, tip){
       tip.classList.remove("flipY","clampLeft","clampRight");
       tip.style.display = "block";
@@ -522,6 +539,7 @@
 
     // Build dots + tips + cards
     rooms.forEach(room => {
+      // dot
       const dot = document.createElement("button");
       dot.className = "hotspot";
       dot.style.top = room.top;
@@ -529,6 +547,7 @@
       dot.dataset.pano = room.pano;
       dot.title = room.name;
 
+      // tip
       const tip = document.createElement("div");
       tip.className = "tip";
       tip.innerHTML = `
@@ -553,6 +572,7 @@
       plan.appendChild(dot);
       dotByPano.set(room.pano, dot);
 
+      // card
       const card = document.createElement("div");
       card.className = "card";
       card.dataset.pano = room.pano;
@@ -573,6 +593,7 @@
       cardByPano.set(room.pano, card);
     });
 
+    // controls
     closeBtn.addEventListener("click", closeRoom);
     fsBtn.addEventListener("click", toggleFullscreen);
     document.addEventListener("fullscreenchange", updateFsBtn);
