@@ -369,9 +369,18 @@
 
     /* mobil: lite tightare UI */
     @media (max-width: 640px){
-      .wrap{ padding: 14px; }
-      .card{ flex-basis: 240px; }
-      .card img{ height: 140px; }
+      .viewerWrap.open{
+        position: fixed;
+        inset: 0;
+        padding: 0;
+        background: #000;
+        backdrop-filter: none;
+      }
+      .viewer{
+        border-radius: 0;
+        border: 0;
+        box-shadow: none;
+      }
     }
   </style>
 </head>
