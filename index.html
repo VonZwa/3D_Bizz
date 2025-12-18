@@ -472,7 +472,10 @@
       if (IS_MOBILE && railWrap) railWrap.classList.add("hidden");
 
       const card = cardByPano.get(room.pano);
-      if (card) card.scrollIntoView({ behavior:"smooth", inline:"center", block:"nearest" });
+      if (card) {
+        const left = card.offsetLeft - (rail.clientWidth - card.clientWidth) / 2;
+        rail.scrollTo({ left, behavior: "smooth" });
+      }
     }
 
     function closeRoom(){
