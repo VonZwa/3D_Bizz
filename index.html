@@ -10,10 +10,12 @@
       --bg:#111;
       --panel:#0f0f0f;
       --panel2:#1a1a1a;
-      --line:rgba(255,255,255,0.08);
+      --line:rgba(255,255,255,0.10);
       --txt:rgba(255,255,255,0.92);
       --txt2:rgba(255,255,255,0.65);
     }
+
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -44,38 +46,54 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     }
 
-    /* ================= HOTSPOTS ================= */
+    /* ================= HOTSPOTS (old style, slightly bigger) ================= */
     .hotspot {
       position: absolute;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.95);
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,0.92);
       background: rgba(0,0,0,0.35);
       transform: translate(-50%, -50%);
       cursor: pointer;
+      z-index: 2;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
     }
 
     .hotspot::after {
       content: "";
       position: absolute;
-      inset: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.95);
+      inset: 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.92);
+      transition: inset .12s ease, opacity .12s ease;
     }
 
     .hotspot:hover {
-      transform: translate(-50%, -50%) scale(1.1);
+      transform: translate(-50%, -50%) scale(1.15);
+      background: rgba(255,255,255,0.08);
     }
 
     .hotspot.active {
-      box-shadow: 0 0 0 6px rgba(255,255,255,0.12);
+      box-shadow: 0 0 0 8px rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.10);
+    }
+    .hotspot.active::after { inset: 6px; }
+
+    .hotspot.peek {
+      box-shadow: 0 0 0 10px rgba(255,255,255,0.10);
+       background: rgba(255,255,255,0.10);
+      animation: pulse 1.3s infinite;
+    }
+    @keyframes pulse{
+      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.20); }
+      70%  { box-shadow: 0 0 0 14px rgba(255,255,255,0.00); }
+      100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.00); }
     }
 
     /* ================= HOVER CARD ================= */
     .tip {
       position: absolute;
-      transform: translate(-50%, -115%);
       width: 220px;
       background: rgba(15,15,15,0.96);
       border: 1px solid var(--line);
@@ -85,6 +103,10 @@
       display: none;
       pointer-events: none;
       z-index: 5;
+
+      left: 50%;
+      top: -12px;
+      transform: translate(-50%, -100%);
     }
 
     .tip img {
@@ -104,7 +126,7 @@
 
     .tip .title {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 650;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -129,9 +151,98 @@
       rotate: 45deg;
     }
 
+    .tip.flipY {
+      top: calc(100% + 12px);
+      transform: translate(-50%, 0);
+    }
+    .tip.flipY::after {
+      top: -8px;
+      bottom: auto;
+      border-right: none;
+      border-bottom: none;
+      border-left: 1px solid var(--line);
+      border-top: 1px solid var(--line);
+      rotate: 45deg;
+    }
+
+    .tip.clampLeft { left: 0; transform: translate(0, -100%); }
+    .tip.clampRight { left: auto; right: 0; transform: translate(0, -100%); }
+    .tip.clampLeft.flipY, .tip.clampRight.flipY { transform: translate(0, 0); }
+
+    /* ================= VIEWER OVER PLAN (overlay inside plan) ================= */
+    .viewerWrap{
+      position:absolute;
+      inset:0;
+      display:none;
+      z-index:9;
+      padding:12px;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(2px);
+    }
+    .viewerWrap.open{ display:block; }
+
+    .viewer{
+      width:100%;
+      height:100%;
+      border-radius:14px;
+      overflow:hidden;
+      background:#000;
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 16px 50px rgba(0,0,0,0.45);
+      position:relative;
+    }
+
+    .viewerHeader {
+      position: absolute;
+      inset: 12px 12px auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .viewerTitle {
+      pointer-events: none;
+      font-size: 14px;
+      color: rgba(255,255,255,0.88);
+      background: rgba(0,0,0,0.40);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 8px 10px;
+      border-radius: 12px;
+      backdrop-filter: blur(6px);
+    }
+
+    .viewerBtns {
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .btn {
+      border: 0;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      backdrop-filter: blur(6px);
+    }
+    .btn:hover { background: rgba(0,0,0,0.60); }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #000;
+    }
+
     /* ================= CAROUSEL ================= */
     .railWrap {
-      margin-top: 14px;
+      margin-top: 18px;
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 14px;
@@ -143,20 +254,37 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
+      gap: 12px;
     }
+    .railHeader .sub { font-size: 13px; color: var(--txt2); }
 
-    .railHeader .sub {
-      font-size: 13px;
-      color: var(--txt2);
-    }
+    .railControls { display: flex; gap: 8px; }
 
-    .railControls {
+    .rail {
+      padding: 6px 2px 16px;
+      overflow-x: auto;
+      overflow-y: visible; 
       display: flex;
-      gap: 8px;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding-bottom: 0px;
+      scrollbar-width: thin;
+      /* 👇 döda scrollbar */
+      scrollbar-width: none;        /* Firefox */
+      -ms-overflow-style: none;     /* Edge legacy */
     }
 
-    .btn {
+    .rail::-webkit-scrollbar{
+      display: none;                /* Chrome / Edge / Safari */
+    }
+    
+
+    .rail::-webkit-scrollbar { height: 10px; }
+    .rail::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 999px; }
+
+    .navBtn {
       border: 0;
       background: rgba(255,255,255,0.12);
       color: #fff;
@@ -164,19 +292,10 @@
       border-radius: 10px;
       cursor: pointer;
       font-size: 14px;
+      user-select: none;
     }
-
-    .btn:hover {
-      background: rgba(255,255,255,0.18);
-    }
-
-    .rail {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      padding-bottom: 6px;
-    }
+    .navBtn:hover { background: rgba(255,255,255,0.18); }
+    .navBtn:disabled { opacity: 0.35; cursor: not-allowed; }
 
     .card {
       flex: 0 0 240px;
@@ -185,17 +304,30 @@
       border-radius: 14px;
       overflow: hidden;
       cursor: pointer;
-      transition: transform .12s ease;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+      position: relative;
+      margin-bottom: 8px;
     }
-
-    .card:hover {
-      transform: translateY(-2px);
-    }
+    .card:hover { transform: translateY(-2px); }
 
     .card img {
       width: 100%;
       height: 135px;
       object-fit: cover;
+      display: block;
+    }
+
+    .badge360 {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: rgba(255,255,255,0.92);
+      padding: 6px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      backdrop-filter: blur(6px);
     }
 
     .card .cmeta {
@@ -203,6 +335,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
     }
 
     .card .cname {
@@ -216,155 +349,241 @@
     .card .ctag {
       font-size: 12px;
       color: var(--txt2);
+      white-space: nowrap;
     }
 
-    /* ================= OVERLAY ================= */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.65);
-      display: none;
-      padding: 18px;
-      box-sizing: border-box;
-      z-index: 10;
-    }
+    .card.active{
+  border: 2px solid rgba(255, 231, 231, 0.956);   /* tjockare & tydligare */
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.25),
+    0 18px 50px rgba(0,0,0,0.45);
+  transform: translateY(-2px);
+}
 
-    .overlay.open {
-      display: block;
-    }
+  .card.active .ctag{
+  color: rgba(255,255,255,0.95);
+  font-weight: 600;
+}
 
-    .modal {
-      width: min(1200px, 100%);
-      height: min(760px, 100%);
-      margin: 0 auto;
-      background: #0f0f0f;
-      border-radius: 14px;
-      overflow: hidden;
-      display: grid;
-      grid-template-rows: 52px 1fr;
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 14px;
-      background: #1a1a1a;
-      border-bottom: 1px solid var(--line);
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      background: #000;
-    }
   </style>
 </head>
 
 <body>
-<div class="wrap">
-  <h2>Plan</h2>
-  <div class="plan" id="plan"></div>
+  <div class="wrap">
+    <h2>Plan</h2>
 
-  <div class="railWrap">
-    <div class="railHeader">
-      <div>
-        <div style="font-weight:650">Rum</div>
-        <div class="sub">Klicka på ett rum för 360°</div>
-      </div>
-      <div class="railControls">
-        <button class="btn" id="prevBtn">◀</button>
-        <button class="btn" id="nextBtn">▶</button>
+    <!-- ✅ EN plan-container (viewer ligger inuti) -->
+    <div class="plan" id="plan">
+      <div class="viewerWrap" id="viewerWrap">
+        <div class="viewer" id="viewer">
+          <div class="viewerHeader">
+            <div class="viewerTitle" id="roomLabel"></div>
+            <div class="viewerBtns">
+              <button class="btn" id="fsBtn">⤢ Fullskärm</button>
+              <button class="btn" id="closeBtn">✕ Stäng</button>
+            </div>
+          </div>
+          <iframe id="viewerFrame" loading="lazy"></iframe>
+        </div>
       </div>
     </div>
-    <div class="rail" id="rail"></div>
-  </div>
-</div>
 
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <span id="roomLabel"></span>
-      <button class="btn" id="closeBtn">✕ Stäng</button>
+    <!-- HERO RAIL -->
+    <div class="railWrap">
+      <div class="railHeader">
+        <div>
+          <div style="font-weight:650">Rum</div>
+          <div class="sub"> - Klick för 360°<br> - Hover för att se var rummet ligger.</div>
+        </div>
+        <div class="railControls">
+          <button class="navBtn" id="prevBtn">◀</button>
+          <button class="navBtn" id="nextBtn">▶</button>
+        </div>
+      </div>
+      <div class="rail" id="rail"></div>
     </div>
-    <iframe id="viewerFrame"></iframe>
   </div>
-</div>
 
-<script>
-  const rooms = [
-    { name:"Entré", pano:"entre", hero:"HERO/hero_entre.png", top:"48%", left:"45%" },
-    { name:"Kök", pano:"kok", hero:"HERO/hero_kok.png", top:"54%", left:"71%" },
-    { name:"Kontor 1", pano:"kontor1", hero:"HERO/hero_kontor1.png", top:"70%", left:"82%" },
-    { name:"Kontor 2", pano:"kontor2", hero:"HERO/hero_kontor2.png", top:"75%", left:"63%" },
-    { name:"Mötesrum 1", pano:"motesrum1", hero:"HERO/hero_motesrum1.png", top:"78%", left:"37.5%" },
-    { name:"Mötesrum 2", pano:"motesrum2", hero:"HERO/hero_motesrum2.png", top:"19%", left:"46.5%" },
-    { name:"Teamsrum", pano:"teamsrum1", hero:"HERO/hero_teamsrum1.png", top:"80%", left:"48%" }
-  ];
+  <script>
+    const rooms = [
+      { name:"Entré", pano:"entre", hero:"HERO/hero_entre.png", top:"48%", left:"45%" },
+      { name:"Kök", pano:"kok", hero:"HERO/hero_kok.png", top:"54%", left:"71%" },
+      { name:"Kontor 1", pano:"kontor1", hero:"HERO/hero_kontor1.png", top:"70%", left:"82%" },
+      { name:"Kontor 2", pano:"kontor2", hero:"HERO/hero_kontor2.png", top:"75%", left:"63%" },
+      { name:"Mötesrum 1", pano:"motesrum1", hero:"HERO/hero_motesrum1.png", top:"78%", left:"37.5%" },
+      { name:"Mötesrum 2", pano:"motesrum2", hero:"HERO/hero_motesrum2.png", top:"19%", left:"46.5%" },
+      { name:"Teamsrum", pano:"teamsrum1", hero:"HERO/hero_teamsrum1.png", top:"80%", left:"48%" }
+    ];
 
-  const plan = document.getElementById("plan");
-  const rail = document.getElementById("rail");
-  const overlay = document.getElementById("overlay");
-  const frame = document.getElementById("viewerFrame");
-  const roomLabel = document.getElementById("roomLabel");
+    const plan = document.getElementById("plan");
+    const rail = document.getElementById("rail");
 
-  function openRoom(room) {
-    roomLabel.textContent = room.name;
-    frame.src = `360viewer.html?pano=${room.pano}`;
-    overlay.classList.add("open");
-    document.querySelectorAll(".hotspot").forEach(h =>
-      h.classList.toggle("active", h.dataset.pano === room.pano)
-    );
-  }
+    const viewerWrap = document.getElementById("viewerWrap");
+    const viewer = document.getElementById("viewer");
+    const frame = document.getElementById("viewerFrame");
+    const roomLabel = document.getElementById("roomLabel");
 
-  function closeRoom() {
-    overlay.classList.remove("open");
-    frame.src = "";
-    document.querySelectorAll(".hotspot").forEach(h => h.classList.remove("active"));
-  }
+    const closeBtn = document.getElementById("closeBtn");
+    const fsBtn = document.getElementById("fsBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
 
-  rooms.forEach(room => {
-    const dot = document.createElement("button");
-    dot.className = "hotspot";
-    dot.style.top = room.top;
-    dot.style.left = room.left;
-    dot.dataset.pano = room.pano;
+    const dotByPano = new Map();
+    const cardByPano = new Map();
 
-    const tip = document.createElement("div");
-    tip.className = "tip";
-    tip.innerHTML = `
-      <img src="${room.hero}">
-      <div class="meta">
-        <div class="title">${room.name}</div>
-        <div class="hint">Klicka</div>
-      </div>`;
-    dot.appendChild(tip);
+    let activePano = null;
 
-    dot.addEventListener("mouseenter", () => tip.style.display = "block");
-    dot.addEventListener("mouseleave", () => tip.style.display = "none");
-    dot.addEventListener("click", () => openRoom(room));
+    function setActive(pano){
+      activePano = pano;
+      dotByPano.forEach((dot, key) => dot.classList.toggle("active", key === pano));
+      cardByPano.forEach((card, key) => card.classList.toggle("active", key === pano));
+    }
 
-    plan.appendChild(dot);
+    // hover-highlight utan att sabba active-state
+    function setPeek(pano){
+      dotByPano.forEach((dot, key) => dot.classList.toggle("peek", key === pano));
+    }
+    function clearPeek(){
+      dotByPano.forEach(dot => dot.classList.remove("peek"));
+    }
 
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <img src="${room.hero}">
-      <div class="cmeta">
-        <div class="cname">${room.name}</div>
-        <div class="ctag">360°</div>
-      </div>`;
-    card.addEventListener("click", () => openRoom(room));
-    rail.appendChild(card);
-  });
+    function openRoom(room){
+      viewerWrap.classList.add("open");
+      roomLabel.textContent = room.name;
+      frame.src = `360viewer.html?pano=${room.pano}`;
+      setActive(room.pano);
 
-  document.getElementById("closeBtn").onclick = closeRoom;
-  overlay.onclick = e => e.target === overlay && closeRoom();
-  window.onkeydown = e => e.key === "Escape" && closeRoom();
+      const card = cardByPano.get(room.pano);
+      if (card) card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
 
-  document.getElementById("prevBtn").onclick = () => rail.scrollBy({ left:-500, behavior:"smooth" });
-  document.getElementById("nextBtn").onclick = () => rail.scrollBy({ left:500, behavior:"smooth" });
-</script>
+    function closeRoom(){
+      viewerWrap.classList.remove("open");
+      frame.src = "";
+      roomLabel.textContent = "";
+      setActive(null);
+    }
+
+    // Klick utanför viewer = stäng
+    viewerWrap.addEventListener("click", (e) => {
+      if (e.target === viewerWrap) closeRoom();
+    });
+
+    async function toggleFullscreen(){
+      try{
+        if (!document.fullscreenElement){
+          await viewer.requestFullscreen();
+        } else {
+          await document.exitFullscreen();
+        }
+      }catch(e){
+        console.log("Fullscreen error:", e);
+      }
+    }
+
+    function updateFsBtn(){
+      fsBtn.textContent = document.fullscreenElement ? "⤡ Avsluta" : "⤢ Fullskärm";
+    }
+
+    function updateArrowState(){
+      const maxScrollLeft = rail.scrollWidth - rail.clientWidth;
+      prevBtn.disabled = rail.scrollLeft <= 2;
+      nextBtn.disabled = rail.scrollLeft >= maxScrollLeft - 2 || maxScrollLeft <= 0;
+    }
+
+    function scrollByCards(direction){
+      const firstCard = rail.querySelector(".card");
+      const step = firstCard ? (firstCard.getBoundingClientRect().width + 12) * 2 : 520;
+      rail.scrollBy({ left: direction * step, behavior:"smooth" });
+    }
+
+    function positionTip(dot, tip){
+      tip.classList.remove("flipY","clampLeft","clampRight");
+      tip.style.display = "block";
+      tip.style.visibility = "hidden";
+
+      const planRect = plan.getBoundingClientRect();
+      const dotRect  = dot.getBoundingClientRect();
+      const tipRect  = tip.getBoundingClientRect();
+      const pad = 10;
+
+      const tipLeft  = dotRect.left - tipRect.width / 2;
+      const tipRight = dotRect.left + tipRect.width / 2;
+
+      if (tipLeft < planRect.left + pad) tip.classList.add("clampLeft");
+      if (tipRight > planRect.right - pad) tip.classList.add("clampRight");
+
+      const spaceAbove = dotRect.top - planRect.top;
+      const needed = tipRect.height + 18;
+      if (spaceAbove < needed) tip.classList.add("flipY");
+
+      tip.style.visibility = "visible";
+    }
+
+    // Build dots + tips + cards
+    rooms.forEach(room => {
+      const dot = document.createElement("button");
+      dot.className = "hotspot";
+      dot.style.top = room.top;
+      dot.style.left = room.left;
+      dot.dataset.pano = room.pano;
+      dot.title = room.name;
+
+      const tip = document.createElement("div");
+      tip.className = "tip";
+      tip.innerHTML = `
+        <img loading="lazy" src="${room.hero}" alt="${room.name}">
+        <div class="meta">
+          <div class="title">${room.name}</div>
+          <div class="hint">Klicka</div>
+        </div>
+      `;
+      dot.appendChild(tip);
+
+      dot.addEventListener("mouseenter", () => {
+        positionTip(dot, tip);
+        setPeek(room.pano);
+      });
+      dot.addEventListener("mouseleave", () => {
+        tip.style.display = "none";
+        clearPeek();
+      });
+      dot.addEventListener("click", () => openRoom(room));
+
+      plan.appendChild(dot);
+      dotByPano.set(room.pano, dot);
+
+      const card = document.createElement("div");
+      card.className = "card";
+      card.dataset.pano = room.pano;
+      card.innerHTML = `
+        <div class="badge360">360°</div>
+        <img loading="lazy" src="${room.hero}" alt="${room.name}">
+        <div class="cmeta">
+          <div class="cname">${room.name}</div>
+          <div class="ctag">Öppna</div>
+        </div>
+      `;
+
+      card.addEventListener("mouseenter", () => setPeek(room.pano));
+      card.addEventListener("mouseleave", () => clearPeek());
+      card.addEventListener("click", () => openRoom(room));
+
+      rail.appendChild(card);
+      cardByPano.set(room.pano, card);
+    });
+
+    closeBtn.addEventListener("click", closeRoom);
+    fsBtn.addEventListener("click", toggleFullscreen);
+    document.addEventListener("fullscreenchange", updateFsBtn);
+
+    prevBtn.addEventListener("click", () => scrollByCards(-1));
+    nextBtn.addEventListener("click", () => scrollByCards(1));
+    rail.addEventListener("scroll", () => requestAnimationFrame(updateArrowState));
+    window.addEventListener("resize", updateArrowState);
+
+    updateArrowState();
+    updateFsBtn();
+  </script>
 </body>
 </html>

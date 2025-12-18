@@ -2,100 +2,84 @@
 <html lang="sv">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>360 Viewer</title>
 
-  <!-- Lokala Pannellum-filer -->
-  <link rel="stylesheet" href="lib/pannellum.css" />
-  <script src="lib/pannellum.js"></script>
+  <!-- Pannellum (CSS + JS via CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 
   <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: #000;
-    }
+    html, body { height: 100%; margin: 0; background: #000; }
+    #viewer { width: 100%; height: 100%; }
+    
 
-    #viewer {
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Liten felskylt om något saknas */
-    #error {
-      position: fixed;
-      inset: 0;
-      display: none;
-      padding: 16px;
-      box-sizing: border-box;
-      background: #000;
-      color: #fff;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      line-height: 1.4;
-    }
-    #error code {
-      display: inline-block;
-      padding: 2px 6px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.12);
-    }
   </style>
 </head>
 
 <body>
   <div id="viewer"></div>
-  <div id="error"></div>
 
   <script>
-    // Läs vilken pano som ska visas: 360viewer.html?pano=kok
-    const params = new URLSearchParams(window.location.search);
-    const key = (params.get("pano") || "entre").toLowerCase();
+    // ========= Helpers =========
+    const qs = new URLSearchParams(location.search);
 
-    // Mappa nycklar till dina filnamn
-    const PANOS = {
-      entre:     "PAN_PIC/PAN_Entre.jpg",
-      kok:       "PAN_PIC/PAN_Kok.jpg",
-      kontor1:   "PAN_PIC/PAN_Kontor1.jpg",
-      kontor2:   "PAN_PIC/PAN_Kontor2.jpg",
-      motesrum1: "PAN_PIC/PAN_Motesrum1.jpg",
-      motesrum2: "PAN_PIC/PAN_Motesrum2.jpg",
-      teamsrum1: "PAN_PIC/PAN_Teamsrum1.jpg"
+    function numParam(name) {
+      if (!qs.has(name)) return null;
+      const v = Number(qs.get(name));
+      return Number.isFinite(v) ? v : null;
+    }
+
+    // ========= 1) Pano-map: koppla "pano=..." till fil + startvy =========
+    // ÄNDRA yaw/pitch/hfov här för att sätta din startvy per rum.
+    const panoMap = {
+      entre:     { file: "PAN_PIC/PAN_Entre.jpg",     yaw:  90, pitch: -4, hfov: 95 },
+      kok:       { file: "PAN_PIC/PAN_Kok.jpg",       yaw: 90, pitch: -8, hfov: 92 },
+      kontor1:   { file: "PAN_PIC/PAN_Kontor1.jpg",   yaw: -130, pitch: -14, hfov: 90 },
+      kontor2:   { file: "PAN_PIC/PAN_Kontor2.jpg",   yaw: 150, pitch: -6, hfov: 90 },
+      motesrum1: { file: "PAN_PIC/PAN_Motesrum1.jpg", yaw:  90, pitch: -5, hfov: 95 },
+      motesrum2: { file: "PAN_PIC/PAN_Motesrum2.jpg", yaw: 90, pitch: -5, hfov: 95 },
+      teamsrum1: { file: "PAN_PIC/PAN_Teamsrum1.jpg", yaw: 75, pitch: -5, hfov: 95 }
     };
 
-    // Enkel hjälpfunktion för att visa fel snyggt
-    function showError(msg) {
-      const el = document.getElementById("error");
-      el.innerHTML = msg;
-      el.style.display = "block";
-    }
+    // ========= 2) Välj pano =========
+    const key = (qs.get("pano") || "kok").toLowerCase();
+    const cfg = panoMap[key] || panoMap.kok;
 
-    // 1) Säkerställ att Pannellum faktiskt finns
-    if (typeof pannellum === "undefined") {
-      showError(
-        "Pannellum är inte laddat.<br><br>" +
-        "Kolla att filerna finns här:<br>" +
-        "<code>lib/pannellum.js</code> och <code>lib/pannellum.css</code><br><br>" +
-        "Och att du kör via <code>http://localhost:8000</code> (inte file://)."
-      );
-      throw new Error("pannellum not loaded");
-    }
+    // URL overrides (om du vill testa snabbt utan att ändra koden)
+    const yawOverride   = numParam("yaw");
+    const pitchOverride = numParam("pitch");
+    const hfovOverride  = numParam("hfov");
 
-    // 2) Hämta rätt panorama-path
-    const panoPath = PANOS[key] || PANOS.entre;
+    const startYaw   = yawOverride   ?? cfg.yaw  ?? 0;
+    const startPitch = pitchOverride ?? cfg.pitch ?? 0;
+    const startHfov  = hfovOverride  ?? cfg.hfov ?? 95;
 
-    // 3) Initiera viewern
-    pannellum.viewer("viewer", {
+    // ========= 3) Init viewer =========
+    // Exponera viewer som window.v så du kan läsa av värden när du “tittat rätt”:
+    // v.getYaw(), v.getPitch(), v.getHfov()
+    window.v = pannellum.viewer("viewer", {
+      
       type: "equirectangular",
-      panorama: panoPath,
+      panorama: cfg.file,
+
       autoLoad: true,
 
-      // UI
-      showZoomCtrl: false,
-      showFullscreenCtrl: true,
+      yaw: startYaw,
+      pitch: startPitch,
+      hfov: startHfov,
 
-      // Känsla (valfritt)
-      mouseZoom: true
+      showFullscreenCtrl: false,   // tar bort fullscreen-ikonen
+      showZoomCtrl: false,
+      showControls: true
     });
+
+
+
+    // Om en fil inte hittas blir det ofta bara svart. Logga det tydligt:
+    console.log("Pano:", key, "=>", cfg.file, "start", { yaw:startYaw, pitch:startPitch, hfov:startHfov });
   </script>
+
+
 </body>
 </html>
