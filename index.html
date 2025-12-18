@@ -562,11 +562,13 @@
       `;
       dot.appendChild(tip);
 
-      dot.addEventListener("mouseenter", () => {
+      dot.addEventListener("pointerenter", (e) => {
+        if (e.pointerType !== "mouse") return; // ingen hover på touch
         positionTip(dot, tip);
         setPeek(room.pano);
       });
-      dot.addEventListener("mouseleave", () => {
+      dot.addEventListener("pointerleave", (e) => {
+        if (e.pointerType !== "mouse") return;
         tip.style.display = "none";
         clearPeek();
       });
@@ -588,8 +590,14 @@
         </div>
       `;
 
-      card.addEventListener("mouseenter", () => setPeek(room.pano));
-      card.addEventListener("mouseleave", () => clearPeek());
+      card.addEventListener("pointerenter", (e) => {
+          if (e.pointerType !== "mouse") return;
+          setPeek(room.pano);
+        });
+        card.addEventListener("pointerleave", (e) => {
+          if (e.pointerType !== "mouse") return;
+          clearPeek();
+        });
       card.addEventListener("click", () => openRoom(room));
 
       rail.appendChild(card);
