@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Plan + Panoramor</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: #fff;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-weight: 600;
+    }
+
+    /* Plan */
+    .plan {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000 url("plan.png") center / contain no-repeat;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    /* Hotspots */
+    .hotspot {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.95);
+      background: rgba(0,0,0,0.35);
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+
+    .hotspot::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+    }
+
+    .hotspot:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display: none;
+      padding: 18px;
+      box-sizing: border-box;
+    }
+
+    .overlay.open {
+      display: block;
+    }
+
+    .modal {
+      width: min(1200px, 100%);
+      height: min(760px, 100%);
+      margin: 0 auto;
+      background: #0f0f0f;
+      border-radius: 14px;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: 52px 1fr;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      background: #1a1a1a;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .modal-header span {
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    .btn {
+      border: 0;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,0.18);
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #000;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h2>Plan</h2>
+    <div class="plan" id="plan"></div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <span id="roomLabel"></span>
+        <button class="btn" id="closeBtn">✕ Stäng</button>
+      </div>
+      <iframe id="viewerFrame" src=""></iframe>
+    </div>
+  </div>
+
+  <script>
+    /* Alla rum – EN sann källa */
+    const rooms = [
+      { name: "Entré",      pano: "entre",     top: "48%", left: "45%" },
+      { name: "Kök",        pano: "kok",       top: "54%", left: "71%" },
+      { name: "Kontor 1",   pano: "kontor1",   top: "70%", left: "82%" },
+      { name: "Kontor 2",   pano: "kontor2",   top: "75%", left: "63%" },
+      { name: "Mötesrum 1", pano: "motesrum1", top: "78%", left: "37.5%" },
+      { name: "Mötesrum 2", pano: "motesrum2", top: "19%", left: "46.5%" },
+      { name: "Teamsrum",   pano: "teamsrum1", top: "80%", left: "48%" }
+    ];
+
+    const plan = document.getElementById("plan");
+    const overlay = document.getElementById("overlay");
+    const frame = document.getElementById("viewerFrame");
+    const roomLabel = document.getElementById("roomLabel");
+    const closeBtn = document.getElementById("closeBtn");
+
+    function openRoom(room) {
+      roomLabel.textContent = room.name;
+      frame.src = `360viewer.html?pano=${room.pano}`;
+      overlay.classList.add("open");
+    }
+
+    function closeRoom() {
+      overlay.classList.remove("open");
+      frame.src = "";
+      roomLabel.textContent = "";
+    }
+
+    /* Rita ut hotspots */
+    rooms.forEach(room => {
+      const dot = document.createElement("button");
+      dot.className = "hotspot";
+      dot.style.top = room.top;
+      dot.style.left = room.left;
+      dot.title = room.name;
+      dot.addEventListener("click", () => openRoom(room));
+      plan.appendChild(dot);
+    });
+
+    closeBtn.addEventListener("click", closeRoom);
+    overlay.addEventListener("click", e => {
+      if (e.target === overlay) closeRoom();
+    });
+    window.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeRoom();
+    });
+  </script>
+</body>
+</html>

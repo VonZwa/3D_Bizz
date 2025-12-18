@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>360 Viewer</title>
+
+  <!-- Lokala Pannellum-filer -->
+  <link rel="stylesheet" href="lib/pannellum.css" />
+  <script src="lib/pannellum.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #000;
+    }
+
+    #viewer {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Liten felskylt om något saknas */
+    #error {
+      position: fixed;
+      inset: 0;
+      display: none;
+      padding: 16px;
+      box-sizing: border-box;
+      background: #000;
+      color: #fff;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      line-height: 1.4;
+    }
+    #error code {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.12);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="viewer"></div>
+  <div id="error"></div>
+
+  <script>
+    // Läs vilken pano som ska visas: 360viewer.html?pano=kok
+    const params = new URLSearchParams(window.location.search);
+    const key = (params.get("pano") || "entre").toLowerCase();
+
+    // Mappa nycklar till dina filnamn
+    const PANOS = {
+      entre:     "PAN_PIC/PAN_Entre.jpg",
+      kok:       "PAN_PIC/PAN_Kok.jpg",
+      kontor1:   "PAN_PIC/PAN_Kontor1.jpg",
+      kontor2:   "PAN_PIC/PAN_Kontor2.jpg",
+      motesrum1: "PAN_PIC/PAN_Motesrum1.jpg",
+      motesrum2: "PAN_PIC/PAN_Motesrum2.jpg",
+      teamsrum1: "PAN_PIC/PAN_Teamsrum1.jpg"
+    };
+
+    // Enkel hjälpfunktion för att visa fel snyggt
+    function showError(msg) {
+      const el = document.getElementById("error");
+      el.innerHTML = msg;
+      el.style.display = "block";
+    }
+
+    // 1) Säkerställ att Pannellum faktiskt finns
+    if (typeof pannellum === "undefined") {
+      showError(
+        "Pannellum är inte laddat.<br><br>" +
+        "Kolla att filerna finns här:<br>" +
+        "<code>lib/pannellum.js</code> och <code>lib/pannellum.css</code><br><br>" +
+        "Och att du kör via <code>http://localhost:8000</code> (inte file://)."
+      );
+      throw new Error("pannellum not loaded");
+    }
+
+    // 2) Hämta rätt panorama-path
+    const panoPath = PANOS[key] || PANOS.entre;
+
+    // 3) Initiera viewern
+    pannellum.viewer("viewer", {
+      type: "equirectangular",
+      panorama: panoPath,
+      autoLoad: true,
+
+      // UI
+      showZoomCtrl: false,
+      showFullscreenCtrl: true,
+
+      // Känsla (valfritt)
+      mouseZoom: true
+    });
+  </script>
+</body>
+</html>
