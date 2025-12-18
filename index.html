@@ -476,6 +476,9 @@
       roomLabel.textContent = room.name;
       frame.src = `360viewer.html?pano=${room.pano}`;
       setActive(room.pano);
+      if (IS_MOBILE && viewer.requestFullscreen) {
+        viewer.requestFullscreen().catch(()=>{});
+      }
 
       // Mobil: dölj rail när pano öppnas
       if (IS_MOBILE && railWrap) railWrap.classList.add("hidden");
