@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>360 Viewer</title>
+
+  <!-- Pannellum (CSS + JS via CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+  <style>
+    html, body { height: 100%; margin: 0; background: #000; }
+    #viewer { width: 100%; height: 100%; }
+    
+
+  </style>
+</head>
+
+<body>
+  <div id="viewer"></div>
+
+  <script>
+    // ========= Helpers =========
+    const qs = new URLSearchParams(location.search);
+
+    function numParam(name) {
+      if (!qs.has(name)) return null;
+      const v = Number(qs.get(name));
+      return Number.isFinite(v) ? v : null;
+    }
+
+    // ========= 1) Pano-map: koppla "pano=..." till fil + startvy =========
+    // ÄNDRA yaw/pitch/hfov här för att sätta din startvy per rum.
+    const panoMap = {
+      entre:     { file: "PAN_PIC/PAN_Entre.jpg",     yaw:  90, pitch: -4, hfov: 95 },
+      kok:       { file: "PAN_PIC/PAN_Kok.jpg",       yaw: 90, pitch: -8, hfov: 92 },
+      kontor1:   { file: "PAN_PIC/PAN_Kontor1.jpg",   yaw: -130, pitch: -14, hfov: 90 },
+      kontor2:   { file: "PAN_PIC/PAN_Kontor2.jpg",   yaw: 150, pitch: -6, hfov: 90 },
+      motesrum1: { file: "PAN_PIC/PAN_Motesrum1.jpg", yaw:  90, pitch: -5, hfov: 95 },
+      motesrum2: { file: "PAN_PIC/PAN_Motesrum2.jpg", yaw: 90, pitch: -5, hfov: 95 },
+      teamsrum1: { file: "PAN_PIC/PAN_Teamsrum1.jpg", yaw: 75, pitch: -5, hfov: 95 }
+    };
+
+    // ========= 2) Välj pano =========
+    const key = (qs.get("pano") || "kok").toLowerCase();
+    const cfg = panoMap[key] || panoMap.kok;
+
+    // URL overrides (om du vill testa snabbt utan att ändra koden)
+    const yawOverride   = numParam("yaw");
+    const pitchOverride = numParam("pitch");
+    const hfovOverride  = numParam("hfov");
+
+    const startYaw   = yawOverride   ?? cfg.yaw  ?? 0;
+    const startPitch = pitchOverride ?? cfg.pitch ?? 0;
+    const startHfov  = hfovOverride  ?? cfg.hfov ?? 95;
+
+    // ========= 3) Init viewer =========
+    // Exponera viewer som window.v så du kan läsa av värden när du “tittat rätt”:
+    // v.getYaw(), v.getPitch(), v.getHfov()
+    window.v = pannellum.viewer("viewer", {
+      
+      type: "equirectangular",
+      panorama: cfg.file,
+
+      autoLoad: true,
+
+      yaw: startYaw,
+      pitch: startPitch,
+      hfov: startHfov,
+
+      showFullscreenCtrl: false,   // tar bort fullscreen-ikonen
+      showZoomCtrl: false,
+      showControls: true
+    });
+
+
+
+    // Om en fil inte hittas blir det ofta bara svart. Logga det tydligt:
+    console.log("Pano:", key, "=>", cfg.file, "start", { yaw:startYaw, pitch:startPitch, hfov:startHfov });
+  </script>
+
+
+</body>
+</html>
